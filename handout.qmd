@@ -1,0 +1,101 @@
+---
+title: "Merging Datasets Using R"
+author: "Assil NOUREDDINE"
+email: "noureddine.assil@stud.hs-fresenius.de"
+matriculation-number: "400924750"
+date: "11 June 2025"
+format:
+  html: default
+  pdf: default
+bibliography: references.bib
+csl: apa.csl
+---
+
+# Abstract
+
+This handout demonstrates how to merge two datasets using the `tidyverse` package in R. We use fictional employee and salary data to explore `left_join()` and `inner_join()`, visualize results, and summarize key findings. The project showcases essential skills for working with relational data and reporting results using Quarto.
+
+# Introduction
+
+In data science, merging datasets is a common and critical operation. Often, information about a subject (such as an employee) is spread across multiple tables. Joining these datasets using common identifiers allows analysts to create comprehensive datasets for analysis.
+
+In this project, we simulate this situation using two datasets:  
+- `employees.csv`: Contains basic employee information.  
+- `salaries.csv`: Contains salary data for some employees.
+
+We'll merge these datasets and conduct simple analysis and visualization.
+
+# Loading Libraries and Data
+
+```{r}
+library(tidyverse)
+
+# Load the datasets
+employees <- read_csv("data/employees.csv")
+salaries <- read_csv("data/salaries.csv")
+```
+
+# Structure of the Datasets
+
+```{r}
+glimpse(employees)
+glimpse(salaries)
+```
+
+# Merging Datasets
+
+We use left_join() to include all employees, even those who don't have a recorded salary, and inner_join() to include only employees who exist in both datasets.
+
+## Perform joins
+
+```{r}
+left_joined <- left_join(employees, salaries, by = "employee_id")
+inner_joined <- inner_join(employees, salaries, by = "employee_id")
+```
+
+# Summary Statistics by Department
+
+We compute the average salary and the number of employees per department. Using left_join(), we ensure all employees are included in the analysis, even those with missing salary data.
+
+```{r}
+left_joined %>%
+  group_by(department) %>%
+  summarise(
+    avg_salary = mean(salary, na.rm = TRUE),
+    count = n()
+  )
+```
+
+# Visualization: Average Salary by Department
+
+The bar plot below shows the average salary per department.
+
+```{r}
+left_joined %>%
+  group_by(department) %>%
+  summarise(avg_salary = mean(salary, na.rm = TRUE)) %>%
+  ggplot(aes(x = department, y = avg_salary)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "Average Salary by Department",
+    x = "Department",
+    y = "Average Salary"
+  ) +
+  theme_minimal()
+```
+
+# Discussion
+
+We observe differences in average salary across departments. This could reflect job roles, experience levels, or salary negotiation practices. The left_join() strategy helps include all employees in the analysis, even if some lack salary records.
+
+Future Work Could:
+
+Include more datasets (e.g., performance data)
+Explore mismatched joins
+Handle duplicate or missing IDs
+
+# Conclusion
+
+This project showed how to combine datasets using dplyr joins in R. We practiced left_join() and inner_join(), and demonstrated data exploration and visualization techniques. These tools are powerful for preparing data in real-world projects.
+
+# References

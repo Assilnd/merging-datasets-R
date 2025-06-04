@@ -1,0 +1,131 @@
+---
+title: "Merging Datasets Using R"
+author: "Assil NOUREDDINE"
+email: "noureddine.assil@stud.hs-fresenius.de"
+matriculation-number: "400924750"
+date: "June 2025"
+format: revealjs
+bibliography: references.bib
+csl: apa.csl
+---
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+# Welcome
+
+## Project Title
+
+**Merging Datasets Using R**
+
+### Assil NOUREDDINE
+
+Matriculation Number: 400924750\
+Email: noureddine.assil\@stud.hs-fresenius.de
+
+------------------------------------------------------------------------
+
+# Abstract
+
+This presentation explains how to merge datasets in R using `tidyverse`. We use fictional employee and salary datasets to demonstrate `left_join()` and `inner_join()`, and visualize the results.
+
+------------------------------------------------------------------------
+
+# Motivation
+
+-   Merging datasets is essential in data science
+-   Data often comes from multiple sources
+-   We need clean, complete data to analyze
+
+------------------------------------------------------------------------
+
+# The Datasets
+
+-   `employees.csv`\
+-   `salaries.csv`\
+    Both use `employee_id` as the linking key.
+
+------------------------------------------------------------------------
+
+# Load and Preview Data
+
+```{r}
+library(tidyverse)
+employees <- read_csv("data/employees.csv")
+salaries <- read_csv("data/salaries.csv")
+
+glimpse(employees)
+glimpse(salaries)
+```
+
+------------------------------------------------------------------------
+
+# Left Join
+
+```{r}
+left_joined <- left_join(employees, salaries, by = "employee_id")
+glimpse(left_joined)
+```
+
+------------------------------------------------------------------------
+
+# Inner Join
+
+```{r}
+inner_joined <- inner_join(employees, salaries, by = "employee_id")
+```
+
+------------------------------------------------------------------------
+
+# Analysis by Department
+
+```{r}
+left_joined %>%
+  group_by(department) %>%
+  summarise(
+    avg_salary = mean(salary, na.rm = TRUE),
+    count = n()
+  )
+```
+
+------------------------------------------------------------------------
+
+# Visualization
+
+```{r}
+left_joined %>%
+  group_by(department) %>%
+  summarise(avg_salary = mean(salary, na.rm = TRUE)) %>%
+  ggplot(aes(x = department, y = avg_salary)) +
+  geom_col(fill = "steelblue") +
+  theme_minimal()
+```
+
+------------------------------------------------------------------------
+
+# Discussion
+
+-   Differences in salary between departments
+-   Why left join was useful
+-   Potential causes: experience, role, etc.
+
+------------------------------------------------------------------------
+
+# Conclusion
+
+-   Merged datasets using `dplyr` joins
+-   Showed how to summarize and plot
+-   Useful for real-world reporting
+
+------------------------------------------------------------------------
+
+# References
+
+Add citations from your `references.bib` here using `@key`.
+
+------------------------------------------------------------------------
+
+# Thank You
+
+Any questions?
